@@ -1008,8 +1008,36 @@ function goStep(n) {
   document.getElementById('sbtn-'+n).classList.add('active');
   currentStep = n;
   document.getElementById('decoder-progress').style.width = (n*25) + '%';
-  if (n === 4) generateReport();
+  if (n === 4) buildReport();
 }
+
+const adEnunFeedback = {
+  nike: {
+    correct: `<strong>Nike — Embrayage:</strong> "Just Do It" è un imperativo puro, interpellazione diretta in seconda persona. Anche quando l'atleta è in débrayage visivo (non guarda in camera), il testo verbale chiama il consumatore ad agire. Nike crea prima distanza mitica, poi ti coinvolge nell'ultima battuta.`,
+    debrayage: `💡 Per Nike prevale l'<strong>embrayage</strong>: l'imperativo "Just Do It" è una chiamata diretta al consumatore. Nike non racconta solo una storia da osservare — ti chiama ad agire.`,
+    misto: `💡 Per Nike prevale l'<strong>embrayage</strong>: il finale imperativo "Just Do It" costituisce un'interpellazione diretta che domina sulla narrativa in terza persona degli atleti.`
+  },
+  apple: {
+    correct: `<strong>Apple — Débrayage:</strong> iPhone è mostrato isolato, senza mani, senza utente, senza contesto. Il prodotto "si presenta da solo". Questo débrayage genera sacralizzazione semiotica: l'oggetto diventa icona distante da ammirare, non strumento da usare.`,
+    embrayage: `💡 Apple usa il <strong>débrayage</strong>: il prodotto isolato su sfondo bianco non interpella nessuno. Non c'è "tu", non c'è sguardo in camera. La sacralizzazione richiede distanza reverenziale.`,
+    misto: `💡 La comunicazione Apple è prevalentemente <strong>débrayage</strong>: il prodotto non interagisce visivamente con l'utente. Il silenzio è parte della strategia.`
+  },
+  dove: {
+    correct: `<strong>Dove Real Beauty — Embrayage:</strong> Le protagoniste guardano direttamente in camera e il voiceover dice "Sei più bella di quanto pensi" in seconda persona. Dove ti parla a te, non racconta di qualcun altro. Una scelta politica consapevole che rompe la tradizione cosmetica del débrayage (modelle irraggiungibili).`,
+    debrayage: `💡 Dove Real Beauty usa l'<strong>embrayage</strong>: il contatto visivo diretto e la seconda persona ("Sei più bella di quanto pensi") interpellano esplicitamente la spettatrice.`,
+    misto: `💡 Prevale l'<strong>embrayage</strong>: il contatto oculare diretto e l'uso della seconda persona rendono l'interpellazione il meccanismo dominante nella campagna Dove.`
+  },
+  supreme: {
+    correct: `<strong>Supreme — Débrayage assoluto:</strong> Il Box Logo su sfondo bianco non parla a nessuno. Nessun "tu", nessuna interpellazione, nessuna narrativa. Supreme presuppone un enunciatario che "sa già" senza bisogno di essere chiamato. Il silenzio comunicativo è il messaggio stesso.`,
+    embrayage: `💡 Supreme usa il <strong>débrayage</strong>: il logo su sfondo bianco non interpella nessuno direttamente. L'assenza di comunicazione tradizionale è la comunicazione stessa.`,
+    misto: `💡 Supreme è <strong>débrayage</strong> puro — zero interpellazione, zero narrativa, zero "tu". Il grado zero dell'enunciazione.`
+  },
+  barilla: {
+    correct: `<strong>Barilla — Strategia Mista:</strong> Lo spot alterna débrayage narrativo (la storia della famiglia in terza persona) a embrayage emotivo (la musica, il calore visivo, la memoria affettiva che "ti riporta a casa"). Barilla non ti dice di comprare — ti fa sentire a casa attraverso un embrayage della memoria.`,
+    debrayage: `💡 Barilla usa una <strong>strategia mista</strong>: c'è sì débrayage narrativo (la storia della famiglia), ma anche un forte embrayage emotivo che ti "parla" attraverso la memoria collettiva e il calore visivo.`,
+    embrayage: `💡 Barilla usa una <strong>strategia mista</strong>: alterna narrazione in terza persona (débrayage) a momenti di embrayage emotivo attraverso musica, calore cromatico e atmosfera domestica.`
+  }
+};
 
 function selectEnun(btn, type) {
   if (btn.classList.contains('answered')) return;
@@ -1026,18 +1054,18 @@ function selectEnun(btn, type) {
       if (b.onclick && b.onclick.toString().includes("'"+correct+"'")) b.classList.add('reveal-correct');
     });
   }
-  const fb = {
-    debrayage: `Il <strong>débrayage</strong> crea distanza enunciativa: il brand racconta una storia in 3ª persona. L'enunciatario osserva senza essere interpellato direttamente. Tipico delle pubblicità "estetiche" che costruiscono un mondo da ammirare (Apple, Supreme).`,
-    embrayage: `L'<strong>embrayage</strong> è il ritorno al soggetto: la pubblicità ti guarda negli occhi, ti chiama per nome, ti invita. Tecniche: sguardo in macchina, "tu/voi", imperativo ("Just Do It!"). Crea coinvolgimento emotivo immediato.`,
-    misto: `La strategia <strong>mista</strong> alterna débrayage (narrativa oggettiva) e embrayage (interpellazione diretta) per costruire prima identificazione poi chiamata all'azione. Efficace per brand "amici" come Barilla che oscillano tra narrazione e calore.`
-  };
+  const adFb = adEnunFeedback[currentAd];
+  const feedbackText = isCorrect ? adFb.correct : adFb[type] || adFb[correct];
   document.getElementById('enum-feedback').style.display = 'block';
-  document.getElementById('enum-feedback').innerHTML = `<div class="feedback-icon">${isCorrect?'✅':'💡'}</div><div>${fb[correct]}</div>`;
+  document.getElementById('enum-feedback').innerHTML = `<div class="feedback-icon">${isCorrect?'✅':'💡'}</div><div>${feedbackText}</div>`;
   document.getElementById('gen-report-btn').style.display = 'inline-block';
 }
 
 function generateReport() {
   goStep(4);
+}
+
+function buildReport() {
   const ad = adData[currentAd];
   const def = adDefaults[currentAd];
   // Use actual user selections or fallback to defaults
